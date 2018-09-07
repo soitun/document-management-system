@@ -21,6 +21,19 @@
 
 package com.openkm.rest.endpoint;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.openkm.api.OKMMail;
 import com.openkm.automation.AutomationException;
 import com.openkm.bean.Mail;
@@ -31,20 +44,12 @@ import com.openkm.module.ModuleManager;
 import com.openkm.rest.GenericException;
 import com.openkm.rest.util.MailList;
 import com.openkm.util.PathUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.mail.MessagingException;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import io.swagger.annotations.Api;
 
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@Api(description="mail-service", value="mail-service")
 @Path("/mail")
 public class MailService {
 	private static Logger log = LoggerFactory.getLogger(MailService.class);

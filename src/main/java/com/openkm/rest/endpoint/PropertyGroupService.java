@@ -21,6 +21,17 @@
 
 package com.openkm.rest.endpoint;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.openkm.bean.form.*;
 import com.openkm.core.Config;
 import com.openkm.core.MimeTypeConfig;
@@ -32,18 +43,12 @@ import com.openkm.rest.util.PropertyGroupList;
 import com.openkm.rest.util.SimplePropertyGroup;
 import com.openkm.rest.util.SimplePropertyGroupList;
 import com.openkm.ws.util.FormElementComplex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.StringTokenizer;
+import io.swagger.annotations.Api;
 
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@Api(description="gropertyGroup-service", value="gropertyGroup-service")
 @Path("/propertyGroup")
 public class PropertyGroupService {
 	private static Logger log = LoggerFactory.getLogger(PropertyGroupService.class);
@@ -232,7 +237,7 @@ public class PropertyGroupService {
 			log.debug("hasGroup({}, {})", new Object[]{nodeId, grpName});
 			PropertyGroupModule cm = ModuleManager.getPropertyGroupModule();
 			boolean ret = cm.hasGroup(null, nodeId, grpName);
-			log.debug("hasGroup: {}", ret);			
+			log.debug("hasGroup: {}", ret);
 			return new Boolean(ret);
 		} catch (Exception e) {
 			throw new GenericException(e);

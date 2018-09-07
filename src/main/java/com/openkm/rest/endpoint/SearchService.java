@@ -21,6 +21,15 @@
 
 package com.openkm.rest.endpoint;
 
+import java.util.*;
+import java.util.Map.Entry;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.openkm.bean.ResultSet;
 import com.openkm.core.MimeTypeConfig;
 import com.openkm.dao.bean.QueryParams;
@@ -29,16 +38,12 @@ import com.openkm.module.SearchModule;
 import com.openkm.rest.GenericException;
 import com.openkm.rest.util.*;
 import com.openkm.util.ISO8601;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.*;
-import java.util.Map.Entry;
+import io.swagger.annotations.Api;
 
 @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@Api(description="search-service", value="search-service")
 @Path("/search")
 public class SearchService {
 	private static Logger log = LoggerFactory.getLogger(SearchService.class);
