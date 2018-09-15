@@ -21,10 +21,24 @@
 
 package com.openkm.util;
 
-import com.openkm.bean.PropertyGroup;
-import com.openkm.bean.form.*;
-import com.openkm.core.Config;
-import com.openkm.core.ParseException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -40,12 +54,23 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
-import java.util.*;
-import java.util.Map.Entry;
+import com.openkm.bean.PropertyGroup;
+import com.openkm.bean.form.Button;
+import com.openkm.bean.form.CheckBox;
+import com.openkm.bean.form.Download;
+import com.openkm.bean.form.FormElement;
+import com.openkm.bean.form.Input;
+import com.openkm.bean.form.Option;
+import com.openkm.bean.form.Print;
+import com.openkm.bean.form.Select;
+import com.openkm.bean.form.Separator;
+import com.openkm.bean.form.SuggestBox;
+import com.openkm.bean.form.Text;
+import com.openkm.bean.form.TextArea;
+import com.openkm.bean.form.Upload;
+import com.openkm.bean.form.Validator;
+import com.openkm.core.Config;
+import com.openkm.core.ParseException;
 
 public class FormUtils {
 	private static Logger log = LoggerFactory.getLogger(FormUtils.class);
@@ -278,7 +303,7 @@ public class FormUtils {
 	}
 
 	/**
-	 * Retrieve the form element from a PropertyGroups definition. 
+	 * Retrieve the form element from a PropertyGroups definition.
 	 */
 	public static FormElement getFormElement(Map<PropertyGroup, List<FormElement>> formsElements, String propertyName) {
 		for (Iterator<Entry<PropertyGroup, List<FormElement>>> it1 = formsElements.entrySet().iterator(); it1.hasNext(); ) {
@@ -317,7 +342,7 @@ public class FormUtils {
 	}
 
 	/**
-	 * Parse individual form fields 
+	 * Parse individual form fields
 	 */
 	private static List<FormElement> parseField(NodeList nlField) {
 		List<FormElement> fe = new ArrayList<FormElement>();
@@ -619,16 +644,19 @@ public class FormUtils {
 	 *
 	 */
 	private static final class ErrorHandler extends DefaultHandler {
+		@Override
 		public void error(SAXParseException exception) throws SAXException {
 			log.error(exception.getMessage());
 			throw exception;
 		}
 
+		@Override
 		public void fatalError(SAXParseException exception) throws SAXException {
 			log.error(exception.getMessage());
 			throw exception;
 		}
 
+		@Override
 		public void warning(SAXParseException exception) throws SAXException {
 			log.warn(exception.getMessage());
 			throw exception;
@@ -883,6 +911,7 @@ public class FormUtils {
 		 * @param systemId - the file name of DTD
 		 * @return InputSource of DTD
 		 */
+		@Override
 		public InputSource resolveEntity(String publicId, String systemId) {
 			hasDTD = false;
 			InputSource aInputSource = null;
@@ -928,6 +957,31 @@ public class FormUtils {
 		 */
 		public boolean hasDTD() {
 			return hasDTD;
+		}
+	}
+
+	/**
+	 * Get map from form elements
+	 */
+	public static void fillMap(List<FormElement> formElements, Map<String, String> properties) {
+		for (FormElement fe : formElements) {
+			String value = null;
+
+			if (fe instanceof Input) {
+				value = ((Input) fe).getValue();
+			} else if (fe instanceof SuggestBox) {
+				value = ((SuggestBox) fe).getValue();
+			} else if (fe instanceof TextArea) {
+				value = ((TextArea) fe).getValue();
+			} else if (fe instanceof CheckBox) {
+				value = Boolean.toString(((CheckBox) fe).getValue());
+			} else if (fe instanceof Select) {
+				value = ((Select) fe).getValue();
+			} else {
+				// throw new ParseException("Unknown property definition: " + fe.getName());
+			}
+
+			properties.put(fe.getName(), value);
 		}
 	}
 }
